@@ -1,12 +1,20 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/jonackers/rssfeeds/internal/database"
+	_ "github.com/lib/pq"
 )
+
+type apiConfig struct {
+	DB *database.Queries
+}
+
 
 func main() {
 	godotenv.Load()
@@ -16,9 +24,25 @@ func main() {
 		log.Fatal("PORT environment variable is not set")
 	}
 
+	dbUrl := os.Getenv("DB_URL")
+	if dbUrl == "" {
+		log.Fatal("DB_URL environment variable is not set")
+	}
+
+	db, err := sql.Open("postgres", dbUrl)
+	if err != nil {
+		log.Fatal("Error opening database:", err)
+	}
+	dbQueries := database.New(db)
+
+	apiCfg := &apiConfig{
+		DB: dbQueries,
+	}
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /v1/readiness", handleReadiness)
 	mux.HandleFunc("GET /v1/err", handleError)
+	mux.HandleFunc("POST /v1/users", apiCfg.handleUsersCreate)
 
 	corsMux := middlewareCors(mux)
 
