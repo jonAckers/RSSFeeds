@@ -9,10 +9,10 @@ import (
 	"github.com/jonackers/rssfeeds/internal/database"
 )
 
-
-func (cfg apiConfig) handleUsersCreate(w http.ResponseWriter, r *http.Request) {
+func (cfg *apiConfig) handleFeedsCreate(w http.ResponseWriter, r *http.Request, user database.User) {
 	type parameters struct {
 		Name string `json:"name"`
+		Url  string `json:"url"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -23,22 +23,19 @@ func (cfg apiConfig) handleUsersCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newUser, err := cfg.DB.CreateUser(r.Context(), database.CreateUserParams{
-						ID: 	   uuid.New(),
+	newFeed, err := cfg.DB.CreateFeed(r.Context(), database.CreateFeedParams{
+						ID:        uuid.New(),
 						CreatedAt: time.Now(),
 						UpdatedAt: time.Now(),
 						Name:      params.Name,
+						Url:       params.Url,
+						UserID:    user.ID,
 					})
 
 	if err != nil {
-		respondWithError(w, 500, "Could not create user")
+		respondWithError(w, 500, "Could not create feed")
 		return
 	}
 
-	respondWithJson(w, 200, newUser)
-}
-
-
-func (cfg apiConfig) handleUsersGetByApiKey(w http.ResponseWriter, r *http.Request, user database.User) {
-	respondWithJson(w, 200, user)
+	respondWithJson(w, 200, newFeed)
 }
