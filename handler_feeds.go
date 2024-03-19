@@ -19,7 +19,7 @@ func (cfg *apiConfig) handleFeedsCreate(w http.ResponseWriter, r *http.Request, 
 	params := parameters{}
 	err := decoder.Decode(&params)
 	if err != nil {
-		respondWithError(w, 400, "Invalid request payload")
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 
@@ -31,11 +31,21 @@ func (cfg *apiConfig) handleFeedsCreate(w http.ResponseWriter, r *http.Request, 
 						Url:       params.Url,
 						UserID:    user.ID,
 					})
-
 	if err != nil {
-		respondWithError(w, 500, "Could not create feed")
+		respondWithError(w, http.StatusInternalServerError, "Could not create feed")
 		return
 	}
 
-	respondWithJson(w, 200, newFeed)
+	respondWithJson(w, http.StatusOK, newFeed)
+}
+
+
+func (cfg *apiConfig) handleFeedsGetAll(w http.ResponseWriter, r *http.Request) {
+	feeds, err := cfg.DB.GetAllFeeds(r.Context())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Could not get feeds")
+		return
+	}
+
+	respondWithJson(w, http.StatusOK, feeds)
 }

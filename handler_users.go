@@ -10,7 +10,7 @@ import (
 )
 
 
-func (cfg apiConfig) handleUsersCreate(w http.ResponseWriter, r *http.Request) {
+func (cfg *apiConfig) handleUsersCreate(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
 		Name string `json:"name"`
 	}
@@ -19,7 +19,7 @@ func (cfg apiConfig) handleUsersCreate(w http.ResponseWriter, r *http.Request) {
 	params := parameters{}
 	err := decoder.Decode(&params)
 	if err != nil {
-		respondWithError(w, 400, "Invalid request payload")
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 
@@ -31,14 +31,14 @@ func (cfg apiConfig) handleUsersCreate(w http.ResponseWriter, r *http.Request) {
 					})
 
 	if err != nil {
-		respondWithError(w, 500, "Could not create user")
+		respondWithError(w, http.StatusInternalServerError, "Could not create user")
 		return
 	}
 
-	respondWithJson(w, 200, newUser)
+	respondWithJson(w, http.StatusOK, newUser)
 }
 
 
-func (cfg apiConfig) handleUsersGetByApiKey(w http.ResponseWriter, r *http.Request, user database.User) {
-	respondWithJson(w, 200, user)
+func (cfg *apiConfig) handleUsersGetByApiKey(w http.ResponseWriter, r *http.Request, user database.User) {
+	respondWithJson(w, http.StatusOK, user)
 }
