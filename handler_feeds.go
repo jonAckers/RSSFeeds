@@ -36,7 +36,21 @@ func (cfg *apiConfig) handleFeedsCreate(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
-	respondWithJson(w, http.StatusOK, newFeed)
+	newFollow, err := cfg.createFeedFollow(r.Context(), user.ID, newFeed.ID)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Could not follow new feed")
+		return
+	}
+
+	response := struct {
+		Feed   database.Feed       `json:"feed"`
+		Follow database.FeedFollow `json:"feed_follow"`
+	}{
+		Feed:   newFeed,
+		Follow: newFollow,
+	}
+
+	respondWithJson(w, http.StatusOK, response)
 }
 
 
