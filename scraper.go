@@ -76,3 +76,26 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 
 	log.Printf("Feed %s collected, %v posts found", feed.Name, len(data.Channel.Item))
 }
+
+
+func startScraping(db *database.Queries, concurrency int, timeBetweenRequest time.Duration) {
+	log.Printf("Collecting feeds every %s on %v goroutines...", timeBetweenRequest, concurrency)
+
+	for {
+		feeds, err := db.GetNextFeedsToFetch(context.Background(), int32(concurrency))
+		if err != nil {
+			log.Printf("Failed to fetch more feeds: %v", err)
+			return
+		}
+		log.Printf("Found %d feeds to fetch!", len(feeds))
+
+		wg := &sync.WaitGroup{}
+		for _, feed := range feeds {
+			wg.Add(1)
+			go scrapeFeed(db, wg, feed)
+		}
+		wg.Wait()
+
+		time.Sleep(timeBetweenRequest)
+	}
+}
