@@ -34,6 +34,17 @@ type FeedFollow struct {
 	FeedID    uuid.UUID `json:"feed_id"`
 }
 
+type Post struct {
+	ID          uuid.UUID  `json:"id"`
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
+	Title       string     `json:"title"`
+	Url         string     `json:"url"`
+	Description *string    `json:"description"`
+	PublishedAt *time.Time `json:"published_at"`
+	FeedID      uuid.UUID  `json:"feed_id"`
+}
+
 
 func databaseUserToUser(user database.User) User {
 	return User {
@@ -69,6 +80,19 @@ func databaseFeedFollowToFeedFollow(feedFollow database.FeedFollow) FeedFollow {
 	}
 }
 
+func databasePostToPost(post database.Post) Post {
+	return Post {
+		ID: post.ID,
+		CreatedAt: post.CreatedAt,
+		UpdatedAt: post.UpdatedAt,
+		Title: post.Title,
+		Url: post.Url,
+		Description: getStringPointer(post.Description),
+		PublishedAt: getTimePointer(post.PublishedAt),
+		FeedID: post.FeedID,
+	}
+}
+
 
 func databaseFeedsToFeeds(feeds []database.Feed) []Feed {
 	result := make([]Feed, len(feeds))
@@ -88,10 +112,25 @@ func databaseFeedFollowsToFeedFollows(feedFollows []database.FeedFollow) []FeedF
 }
 
 
+func databasePostsToPosts(posts []database.Post) []Post {
+	result := make([]Post, len(posts))
+	for i, post := range posts {
+		result[i] = databasePostToPost(post)
+	}
+	return result
+}
+
+
 func getTimePointer(time sql.NullTime) *time.Time {
 	if time.Valid {
 		return &time.Time
 	}
+	return nil
+}
 
+func getStringPointer(str sql.NullString) *string {
+	if str.Valid {
+		return &str.String
+	}
 	return nil
 }

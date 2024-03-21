@@ -52,7 +52,9 @@ func main() {
 
 	mux.HandleFunc("POST /v1/feed_follows", apiCfg.middlewareAuth(apiCfg.handleFeedFollowsCreate))
 	mux.HandleFunc("DELETE /v1/feed_follows/{feedFollowID}", apiCfg.middlewareAuth(apiCfg.handleFeedFollowsDelete))
-	mux.HandleFunc("GET /v1/feed_follows", apiCfg.middlewareAuth(apiCfg.handleGetAllFeedFollows))
+	mux.HandleFunc("GET /v1/feed_follows", apiCfg.middlewareAuth(apiCfg.handleFeedFollowsGetAll))
+
+	mux.HandleFunc("GET /v1/posts", apiCfg.middlewareAuth(apiCfg.handlePostsGet))
 
 	corsMux := middlewareCors(mux)
 

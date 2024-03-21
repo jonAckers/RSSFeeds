@@ -83,18 +83,18 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 		}
 
 		_, err := db.CreatePost(context.Background(), database.CreatePostParams{
-			ID: uuid.New(),
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
-			Title: item.Title,
-			Url: item.Link,
-			Description: sql.NullString{
-				String: item.Description,
-				Valid:  true,
-			},
-			PublishedAt: publishedAt,
-			FeedID: feed.ID,
-		})
+									ID: uuid.New(),
+									CreatedAt: time.Now(),
+									UpdatedAt: time.Now(),
+									Title: item.Title,
+									Url: item.Link,
+									Description: sql.NullString{
+										String: item.Description,
+										Valid:  true,
+									},
+									PublishedAt: publishedAt,
+									FeedID: feed.ID,
+								})
 
 		if err != nil {
 			if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {

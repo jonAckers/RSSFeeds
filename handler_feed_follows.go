@@ -61,7 +61,7 @@ func (cfg *apiConfig) handleFeedFollowsDelete(w http.ResponseWriter, r *http.Req
 }
 
 
-func (cfg *apiConfig) handleGetAllFeedFollows(w http.ResponseWriter, r *http.Request, user database.User) {
+func (cfg *apiConfig) handleFeedFollowsGetAll(w http.ResponseWriter, r *http.Request, user database.User) {
 	feedFollows, err := cfg.DB.GetFeedFollowsForUser(r.Context(), user.ID)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Could not fetch feed follows")
