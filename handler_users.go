@@ -35,10 +35,10 @@ func (cfg *apiConfig) handleUsersCreate(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	respondWithJson(w, http.StatusOK, newUser)
+	respondWithJson(w, http.StatusOK, databaseUserToUser(newUser))
 }
 
 
 func (cfg *apiConfig) handleUsersGetByApiKey(w http.ResponseWriter, r *http.Request, user database.User) {
-	respondWithJson(w, http.StatusOK, user)
+	respondWithJson(w, http.StatusOK, databaseUserToUser(user))
 }

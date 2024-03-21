@@ -43,11 +43,11 @@ func (cfg *apiConfig) handleFeedsCreate(w http.ResponseWriter, r *http.Request, 
 	}
 
 	response := struct {
-		Feed   database.Feed       `json:"feed"`
-		Follow database.FeedFollow `json:"feed_follow"`
+		Feed   Feed       `json:"feed"`
+		Follow FeedFollow `json:"feed_follow"`
 	}{
-		Feed:   newFeed,
-		Follow: newFollow,
+		Feed:   databaseFeedToFeed(newFeed),
+		Follow: databaseFeedFollowToFeedFollow(newFollow),
 	}
 
 	respondWithJson(w, http.StatusOK, response)
@@ -61,5 +61,5 @@ func (cfg *apiConfig) handleFeedsGetAll(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	respondWithJson(w, http.StatusOK, feeds)
+	respondWithJson(w, http.StatusOK, databaseFeedsToFeeds(feeds))
 }

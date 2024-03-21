@@ -41,7 +41,7 @@ func (cfg *apiConfig) handleFeedFollowsCreate(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	respondWithJson(w, http.StatusOK, newFeedFollow)
+	respondWithJson(w, http.StatusOK, databaseFeedFollowToFeedFollow(newFeedFollow))
 }
 
 
@@ -62,11 +62,11 @@ func (cfg *apiConfig) handleFeedFollowsDelete(w http.ResponseWriter, r *http.Req
 
 
 func (cfg *apiConfig) handleGetAllFeedFollows(w http.ResponseWriter, r *http.Request, user database.User) {
-	feeds, err := cfg.DB.GetFeedFollowsForUser(r.Context(), user.ID)
+	feedFollows, err := cfg.DB.GetFeedFollowsForUser(r.Context(), user.ID)
 	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Could not fetch feeds")
+		respondWithError(w, http.StatusInternalServerError, "Could not fetch feed follows")
 		return
 	}
 
-	respondWithJson(w, http.StatusOK, feeds)
+	respondWithJson(w, http.StatusOK, databaseFeedFollowsToFeedFollows(feedFollows))
 }
