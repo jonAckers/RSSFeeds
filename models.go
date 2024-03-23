@@ -45,9 +45,8 @@ type Post struct {
 	FeedID      uuid.UUID  `json:"feed_id"`
 }
 
-
 func databaseUserToUser(user database.User) User {
-	return User {
+	return User{
 		ID:        user.ID,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
@@ -56,9 +55,8 @@ func databaseUserToUser(user database.User) User {
 	}
 }
 
-
 func databaseFeedToFeed(feed database.Feed) Feed {
-	return Feed {
+	return Feed{
 		ID:            feed.ID,
 		CreatedAt:     feed.CreatedAt,
 		UpdatedAt:     feed.UpdatedAt,
@@ -68,7 +66,6 @@ func databaseFeedToFeed(feed database.Feed) Feed {
 		LastFetchedAt: getTimePointer(feed.LastFetchedAt),
 	}
 }
-
 
 func databaseFeedFollowToFeedFollow(feedFollow database.FeedFollow) FeedFollow {
 	return FeedFollow{
@@ -81,18 +78,17 @@ func databaseFeedFollowToFeedFollow(feedFollow database.FeedFollow) FeedFollow {
 }
 
 func databasePostToPost(post database.Post) Post {
-	return Post {
-		ID: post.ID,
-		CreatedAt: post.CreatedAt,
-		UpdatedAt: post.UpdatedAt,
-		Title: post.Title,
-		Url: post.Url,
+	return Post{
+		ID:          post.ID,
+		CreatedAt:   post.CreatedAt,
+		UpdatedAt:   post.UpdatedAt,
+		Title:       post.Title,
+		Url:         post.Url,
 		Description: getStringPointer(post.Description),
 		PublishedAt: getTimePointer(post.PublishedAt),
-		FeedID: post.FeedID,
+		FeedID:      post.FeedID,
 	}
 }
-
 
 func databaseFeedsToFeeds(feeds []database.Feed) []Feed {
 	result := make([]Feed, len(feeds))
@@ -102,7 +98,6 @@ func databaseFeedsToFeeds(feeds []database.Feed) []Feed {
 	return result
 }
 
-
 func databaseFeedFollowsToFeedFollows(feedFollows []database.FeedFollow) []FeedFollow {
 	result := make([]FeedFollow, len(feedFollows))
 	for i, ff := range feedFollows {
@@ -111,7 +106,6 @@ func databaseFeedFollowsToFeedFollows(feedFollows []database.FeedFollow) []FeedF
 	return result
 }
 
-
 func databasePostsToPosts(posts []database.Post) []Post {
 	result := make([]Post, len(posts))
 	for i, post := range posts {
@@ -119,7 +113,6 @@ func databasePostsToPosts(posts []database.Post) []Post {
 	}
 	return result
 }
-
 
 func getTimePointer(time sql.NullTime) *time.Time {
 	if time.Valid {

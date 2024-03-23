@@ -9,6 +9,8 @@ import (
 
 type authedHandler func(http.ResponseWriter, *http.Request, database.User)
 
+// middlewareAuth authenticates requests using the API key provided in the
+// header before passing on the request to a given handler.
 func (cfg *apiConfig) middlewareAuth(next authedHandler) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		apiKey, err := auth.GetAPIKey(r.Header)

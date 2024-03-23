@@ -32,11 +32,10 @@ type RSSFeed struct {
 	} `xml:"channel"`
 }
 
-
 func fetchFeed(feedUrl string) (*RSSFeed, error) {
-	client := http.Client {
-					Timeout: 10 * time.Second,
-				}
+	client := http.Client{
+		Timeout: 10 * time.Second,
+	}
 
 	resp, err := client.Get(feedUrl)
 	if err != nil {
@@ -57,7 +56,6 @@ func fetchFeed(feedUrl string) (*RSSFeed, error) {
 
 	return &rssFeed, nil
 }
-
 
 func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 	defer wg.Done()
@@ -83,18 +81,18 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 		}
 
 		_, err := db.CreatePost(context.Background(), database.CreatePostParams{
-									ID: uuid.New(),
-									CreatedAt: time.Now(),
-									UpdatedAt: time.Now(),
-									Title: item.Title,
-									Url: item.Link,
-									Description: sql.NullString{
-										String: item.Description,
-										Valid:  true,
-									},
-									PublishedAt: publishedAt,
-									FeedID: feed.ID,
-								})
+			ID:        uuid.New(),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			Title:     item.Title,
+			Url:       item.Link,
+			Description: sql.NullString{
+				String: item.Description,
+				Valid:  true,
+			},
+			PublishedAt: publishedAt,
+			FeedID:      feed.ID,
+		})
 
 		if err != nil {
 			if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
@@ -109,7 +107,6 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 
 	log.Printf("Feed %s collected, %v posts found", feed.Name, len(data.Channel.Item))
 }
-
 
 func startScraping(db *database.Queries, concurrency int, timeBetweenRequest time.Duration) {
 	log.Printf("Collecting feeds every %s on %v goroutines...", timeBetweenRequest, concurrency)

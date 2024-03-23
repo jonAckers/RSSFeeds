@@ -9,6 +9,9 @@ import (
 	"github.com/jonackers/rssfeeds/internal/database"
 )
 
+// handleFeedsCreate handles requests to the create feed endpoint.
+// Requests must come from authenticated users, and the feeds are requested using a
+// Name and URL provided in the request body.
 func (cfg *apiConfig) handleFeedsCreate(w http.ResponseWriter, r *http.Request, user database.User) {
 	type parameters struct {
 		Name string `json:"name"`
@@ -24,13 +27,13 @@ func (cfg *apiConfig) handleFeedsCreate(w http.ResponseWriter, r *http.Request, 
 	}
 
 	newFeed, err := cfg.DB.CreateFeed(r.Context(), database.CreateFeedParams{
-						ID:        uuid.New(),
-						CreatedAt: time.Now(),
-						UpdatedAt: time.Now(),
-						Name:      params.Name,
-						Url:       params.Url,
-						UserID:    user.ID,
-					})
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		Name:      params.Name,
+		Url:       params.Url,
+		UserID:    user.ID,
+	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Could not create feed")
 		return
@@ -53,7 +56,8 @@ func (cfg *apiConfig) handleFeedsCreate(w http.ResponseWriter, r *http.Request, 
 	respondWithJson(w, http.StatusOK, response)
 }
 
-
+// handleFeedsGetAll handles requests to the get feeds endpoint.
+// It returns all of the feeds in the database.
 func (cfg *apiConfig) handleFeedsGetAll(w http.ResponseWriter, r *http.Request) {
 	feeds, err := cfg.DB.GetAllFeeds(r.Context())
 	if err != nil {

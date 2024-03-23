@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+// respondWithJson writes a given JSON object to the http response body
+// as well as a given http code to the header.
 func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
 	response, err := json.Marshal(payload)
 	if err != nil {
@@ -18,6 +20,8 @@ func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
 	w.Write(response)
 }
 
+// respondWithError writes an error message to the  http response body
+// as well as a given http code to the header.
 func respondWithError(w http.ResponseWriter, code int, msg string) {
 	if code > 499 {
 		log.Println("Responding with error:", msg)

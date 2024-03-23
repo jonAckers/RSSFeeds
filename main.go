@@ -16,7 +16,6 @@ type apiConfig struct {
 	DB *database.Queries
 }
 
-
 func main() {
 	godotenv.Load()
 
